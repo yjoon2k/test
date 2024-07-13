@@ -1,28 +1,28 @@
 Endpoints:
   metadata:
-    name: thelper-external
+    name: test-external
     namespace: heimdall
   apiVersion: v1
   kind: Endpoints
   subsets:
   - addresses:
-    - ip: 10.0.1,1
+    - ip: 10.0.1.2
     ports:
-    - port: 8080
+    - port: 8090
 Service:
   metadata:
-    name: thelper-external
+    name: test-external
     namespace: heimdall
   apiVersion: v1
   kind: Service
   spec:
     type: ClusterIP
     ports:
-    - port: 8080
-      targetPort: 8080
+    - port: 8090
+      targetPort: 8090
 Ingress:
   metadata:
-    name: thelper-ingress
+    name: test-ingress
     namespace: heimdall
     annotations:
       nginx.ingress.kubernetes.io/proxy-body-size: 10G
@@ -34,15 +34,15 @@ Ingress:
     tls:
     - secretName: wildcard-overcloud-prod-cert
       hosts:
-      - thelper.aoldacloud.com
+      - test.aoldacloud.com
     rules:
-    - host: thelper.aoldacloud.com
+    - host: test.aoldacloud.com
       http:
         paths:
         - path: /
           backend:
             service:
               port:
-                number: 8080
-              name: thelper-external
+                number: 8090
+              name: test-external
           pathType: Prefix
