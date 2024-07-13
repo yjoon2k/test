@@ -1,0 +1,48 @@
+Endpoints:
+  metadata:
+    name: new-external
+    namespace: heimdall
+  apiVersion: v1
+  kind: Endpoints
+  subsets:
+  - addresses:
+    - ip: 10.0.0.1
+    ports:
+    - port: 8080
+Service:
+  metadata:
+    name: new-external
+    namespace: heimdall
+  apiVersion: v1
+  kind: Service
+  spec:
+    type: ClusterIP
+    ports:
+    - port: 8080
+      targetPort: 8080
+Ingress:
+  metadata:
+    name: new-ingress
+    namespace: heimdall
+    annotations:
+      nginx.ingress.kubernetes.io/proxy-body-size: 10G
+      nginx.ingress.kubernetes.io/backend-protocol: HTTPS
+      kubernetes.io/ingress.class: nginx
+  apiVersion: networking.k8s.io/v1
+  kind: Ingress
+  spec:
+    tls:
+    - secretName: wildcard-overcloud-prod-cert
+      hosts:
+      - new.aoldacloud.com
+    rules:
+    - host: new.aoldacloud.com
+      http:
+        paths:
+        - path: /
+          backend:
+            service:
+              port:
+                number: 8080
+              name: new-external
+          pathType: Prefix
