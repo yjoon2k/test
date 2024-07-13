@@ -1,29 +1,29 @@
 apiVersion: v1
 kind: Endpoints
 metadata:
-  name: aolda-external
+  name: aoldatest-external
   namespace: heimdall
 subsets:
 - addresses:
   - ip: 10.0.0.1
   ports:
-  - port: {INPUT_PORT}
+  - port: 8080
   —
 apiVersion: v1
 kind: Service
 metadata:
-  name: aolda-external
+  name: aoldatest-external
   namespace: heimdall
 spec:
   type: ClusterIP
   ports:
-  - port: {INPUT_PORT}
+  - port: 8080
     targetPort: {INPUT_PORT}
   —
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: aolda-ingress
+  name: aoldatest-ingress
   namespace: heimdall
   annotations:
     nginx.ingress.kubernetes.io/proxy-body-size: "10G"
@@ -35,13 +35,13 @@ spec:
     - {INPUT_SUB_DOMAIN}.aoldacloud.com
     secretName: wildcard-overcloud-prod-cert
   rules:
-  - host: aolda.aoldacloud.com
+  - host: aoldatest.aoldacloud.com
     http:
       paths:
           - pathType: Prefix
             path: /
             backend:
               service:
-                name: aolda-external
+                name: aoldatest-external
                 port:
-                  number: {INPUT_PORT}
+                  number: 8080
