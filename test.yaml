@@ -1,29 +1,29 @@
 apiVersion: v1
 kind: Endpoints
 metadata:
-  name: {INPUT_SUB_DOMAIN}-external
+  name: test-external
   namespace: heimdall
 subsets:
 - addresses:
-  - ip: {INPUT_FLOATING_IP}
+  - ip: 10.1.1.1
   ports:
-  - port: {INPUT_PORT}
+  - port: 80
   —
 apiVersion: v1
 kind: Service
 metadata:
-  name: {INPUT_SUB_DOMAIN}-external
+  name: test-external
   namespace: heimdall
 spec:
   type: ClusterIP
   ports:
-  - port: {INPUT_PORT}
-    targetPort: {INPUT_PORT}
+  - port: 80
+    targetPort: 80
   —
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: {INPUT_SUB_DOMAIN}-ingress
+  name: test-ingress
   namespace: heimdall
   annotations:
     nginx.ingress.kubernetes.io/proxy-body-size: "10G"
@@ -32,16 +32,16 @@ metadata:
 spec:
   tls:
   - hosts:
-    - {INPUT_SUB_DOMAIN}.aoldacloud.com
+    - test.aoldacloud.com
     secretName: wildcard-overcloud-prod-cert
   rules:
-  - host: {INPUT_SUB_DOMAIN}.aoldacloud.com
+  - host: test.aoldacloud.com
     http:
       paths:
           - pathType: Prefix
             path: /
             backend:
               service:
-                name: {INPUT_SUB_DOMAIN}-external
+                name: test-external
                 port:
-                  number: {INPUT_PORT}
+                  number: 80
