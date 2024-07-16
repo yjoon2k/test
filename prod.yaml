@@ -1,28 +1,28 @@
 Endpoints:
   metadata:
-    name: fine-external
+    name: gstone-external
     namespace: heimdall
   apiVersion: v1
   kind: Endpoints
   subsets:
   - addresses:
-    - ip: 11.11.11.11
+    - ip: 1.1.1.1
     ports:
-    - port: 443
+    - port: 8080
 Service:
   metadata:
-    name: fine-external
+    name: gstone-external
     namespace: heimdall
   apiVersion: v1
   kind: Service
   spec:
     type: ClusterIP
     ports:
-    - port: 443
-      targetPort: 443
+    - port: 8080
+      targetPort: 8080
 Ingress:
   metadata:
-    name: fine-ingress
+    name: gstone-ingress
     namespace: heimdall
     annotations:
       nginx.ingress.kubernetes.io/proxy-body-size: 10G
@@ -34,15 +34,15 @@ Ingress:
     tls:
     - secretName: wildcard-overcloud-prod-cert
       hosts:
-      - fine.aoldacloud.com
+      - gstone.aoldacloud.com
     rules:
-    - host: fine.aoldacloud.com
+    - host: gstone.aoldacloud.com
       http:
         paths:
         - path: /
           backend:
             service:
               port:
-                number: 443
-              name: fine-external
+                number: 8080
+              name: gstone-external
           pathType: Prefix
