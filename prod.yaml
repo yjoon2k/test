@@ -1,28 +1,28 @@
 Endpoints:
   metadata:
-    name: new-external
+    name: fine-external
     namespace: heimdall
   apiVersion: v1
   kind: Endpoints
   subsets:
   - addresses:
-    - ip: 10.0.0.1
+    - ip: 11.11.11.11
     ports:
-    - port: 8080
+    - port: 443
 Service:
   metadata:
-    name: new-external
+    name: fine-external
     namespace: heimdall
   apiVersion: v1
   kind: Service
   spec:
     type: ClusterIP
     ports:
-    - port: 8080
-      targetPort: 8080
+    - port: 443
+      targetPort: 443
 Ingress:
   metadata:
-    name: new-ingress
+    name: fine-ingress
     namespace: heimdall
     annotations:
       nginx.ingress.kubernetes.io/proxy-body-size: 10G
@@ -34,15 +34,15 @@ Ingress:
     tls:
     - secretName: wildcard-overcloud-prod-cert
       hosts:
-      - new.aoldacloud.com
+      - fine.aoldacloud.com
     rules:
-    - host: new.aoldacloud.com
+    - host: fine.aoldacloud.com
       http:
         paths:
         - path: /
           backend:
             service:
               port:
-                number: 8080
-              name: new-external
+                number: 443
+              name: fine-external
           pathType: Prefix
