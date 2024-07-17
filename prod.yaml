@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Endpoints
 metadata:
-  name: test-external
+  name: gstone-external
   namespace: heimdall
 subsets:
 - addresses:
@@ -12,7 +12,7 @@ subsets:
 apiVersion: v1
 kind: Service
 metadata:
-  name: test-external
+  name: gstone-external
   namespace: heimdall
 spec:
   type: ClusterIP
@@ -23,7 +23,7 @@ spec:
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: test-ingress
+  name: gstone-ingress
   namespace: heimdall
   annotations:
     nginx.ingress.kubernetes.io/proxy-body-size: "10G"
@@ -32,16 +32,16 @@ metadata:
 spec:
   tls:
   - hosts:
-    - test.aoldacloud.com
+    - gstone.aoldacloud.com
     secretName: wildcard-overcloud-prod-cert
   rules:
-  - host: test.aoldacloud.com
+  - host: gstone.aoldacloud.com
     http:
       paths:
           - pathType: Prefix
             path: /
             backend:
               service:
-                name: test-external
+                name: gstone-external
                 port:
                   number: 8080
