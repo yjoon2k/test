@@ -1,62 +1,47 @@
----
-endpoints:
-- apiVersion: "v1"
-  kind: "Endpoints"
-  metadata:
-    name: "laasst-external"
-    namespace: "heimdall"
-  subsets:
-  - addresses:
-    - ip: "10.11.12.13"
-    ports:
-    - port: 443
-      name: null
-- apiVersion: "v1"
-  kind: "Endpoints"
-  metadata:
-    name: "laasst-external"
-    namespace: "heimdall"
-  subsets:
-  - addresses:
-    - ip: "10.11.12.13"
-    ports:
-    - port: 443
-      name: null
-services:
-- apiVersion: "v1"
-  kind: "Service"
-  metadata:
-    name: "laasst-external"
-    namespace: "heimdall"
-  spec:
-    type: "ClusterIP"
-    ports:
-    - name: null
-      port: 443
-      targetPort: 443
-ingress:
-  apiVersion: "networking.k8s.io/v1"
-  kind: "Ingress"
-  metadata:
-    name: "laasst-ingress"
-    namespace: "heimdall"
-    annotations:
-      nginx.ingress.kubernetes.io/proxy-body-size: "10G"
-      nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
-      kubernetes.io/ingress.class: "nginx"
-  spec:
-    tls:
-    - hosts:
-      - "laasst.aoldacloud.com"
-      secretName: "wildcard-overcloud-prod-cert"
-    rules:
-    - host: "laasst.aoldacloud.com"
-      http:
-        paths:
-        - pathType: "Prefix"
-          path: "/"
-          backend:
-            service:
-              name: "laasst-external"
-              port:
-                number: 443
+apiVersion: v1
+kind: Endpoints
+metadata:
+  name: test-external
+  namespace: heimdall
+subsets:
+- addresses:
+  - ip: 10.0.1.3
+  ports:
+  - port: 8080
+—
+apiVersion: v1
+kind: Service
+metadata:
+  name: test-external
+  namespace: heimdall
+spec:
+  type: ClusterIP
+  ports:
+  - port: 8080
+    targetPort: 8080
+—
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: test-ingress
+  namespace: heimdall
+  annotations:
+    nginx.ingress.kubernetes.io/proxy-body-size: "10G"
+    nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+    kubernetes.io/ingress.class: "nginx"
+spec:
+  tls:
+  - hosts:
+    - test.aoldacloud.com
+    secretName: wildcard-overcloud-prod-cert
+  rules:
+  - host: test.aoldacloud.com
+    http:
+      paths:
+          - pathType: Prefix
+            path: /
+            backend:
+              service:
+                name: test-external
+                port:
+                  number: 8080
