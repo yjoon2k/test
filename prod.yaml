@@ -1,62 +1,47 @@
----
-endpoints:
-- apiVersion: "v1"
-  kind: "Endpoints"
-  metadata:
-    name: "test-external"
-    namespace: "heimdall"
-  subsets:
-  - addresses:
-    - ip: "1.1.1.0"
-    ports:
-    - port: 8080
-      name: null
-- apiVersion: "v1"
-  kind: "Endpoints"
-  metadata:
-    name: "test-external"
-    namespace: "heimdall"
-  subsets:
-  - addresses:
-    - ip: "1.1.1.0"
-    ports:
-    - port: 8080
-      name: null
-services:
-- apiVersion: "v1"
-  kind: "Service"
-  metadata:
-    name: "test-external"
-    namespace: "heimdall"
-  spec:
-    type: "ClusterIP"
-    ports:
-    - name: null
-      port: 8080
-      targetPort: 8080
-ingress:
-  apiVersion: "networking.k8s.io/v1"
-  kind: "Ingress"
-  metadata:
-    name: "test-ingress"
-    namespace: "heimdall"
-    annotations:
-      nginx.ingress.kubernetes.io/proxy-body-size: "10G"
-      nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
-      kubernetes.io/ingress.class: "nginx"
-  spec:
-    tls:
-    - hosts:
-      - "test.aoldacloud.com"
-      secretName: "wildcard-overcloud-prod-cert"
-    rules:
-    - host: "test.aoldacloud.com"
-      http:
-        paths:
-        - pathType: "Prefix"
-          path: "/"
-          backend:
-            service:
-              name: "test-external"
-              port:
-                number: 443
+apiVersion: v1
+kind: Endpoints
+metadata:
+  name: test-external
+  namespace: heimdall
+subsets:
+- addresses:
+  - ip: 1.1.1.0
+  ports:
+  - port: 8080
+—
+apiVersion: v1
+kind: Service
+metadata:
+  name: test-external
+  namespace: heimdall
+spec:
+  type: ClusterIP
+  ports:
+  - port: 8080
+    targetPort: 8080
+—
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: test-ingress
+  namespace: heimdall
+  annotations:
+    nginx.ingress.kubernetes.io/proxy-body-size: "10G"
+    nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+    kubernetes.io/ingress.class: "nginx"
+spec:
+  tls:
+  - hosts:
+    - test.aoldacloud.com
+    secretName: wildcard-overcloud-prod-cert
+  rules:
+  - host: test.aoldacloud.com
+    http:
+      paths:
+          - pathType: Prefix
+            path: /
+            backend:
+              service:
+                name: test-external
+                port:
+                  number: 8080
