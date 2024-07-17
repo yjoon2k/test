@@ -1,48 +1,62 @@
-Endpoints:
+---
+endpoints:
+- apiVersion: "v1"
+  kind: "Endpoints"
   metadata:
-    name: gstone-external
-    namespace: heimdall
-  apiVersion: v1
-  kind: Endpoints
+    name: "test-external"
+    namespace: "heimdall"
   subsets:
   - addresses:
-    - ip: 1.1.1.1
+    - ip: "1.1.1.0"
     ports:
     - port: 8080
-Service:
+      name: null
+- apiVersion: "v1"
+  kind: "Endpoints"
   metadata:
-    name: gstone-external
-    namespace: heimdall
-  apiVersion: v1
-  kind: Service
+    name: "test-external"
+    namespace: "heimdall"
+  subsets:
+  - addresses:
+    - ip: "1.1.1.0"
+    ports:
+    - port: 8080
+      name: null
+services:
+- apiVersion: "v1"
+  kind: "Service"
+  metadata:
+    name: "test-external"
+    namespace: "heimdall"
   spec:
-    type: ClusterIP
+    type: "ClusterIP"
     ports:
-    - port: 8080
+    - name: null
+      port: 8080
       targetPort: 8080
-Ingress:
+ingress:
+  apiVersion: "networking.k8s.io/v1"
+  kind: "Ingress"
   metadata:
-    name: gstone-ingress
-    namespace: heimdall
+    name: "test-ingress"
+    namespace: "heimdall"
     annotations:
-      nginx.ingress.kubernetes.io/proxy-body-size: 10G
-      nginx.ingress.kubernetes.io/backend-protocol: HTTPS
-      kubernetes.io/ingress.class: nginx
-  apiVersion: networking.k8s.io/v1
-  kind: Ingress
+      nginx.ingress.kubernetes.io/proxy-body-size: "10G"
+      nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+      kubernetes.io/ingress.class: "nginx"
   spec:
     tls:
-    - secretName: wildcard-overcloud-prod-cert
-      hosts:
-      - gstone.aoldacloud.com
+    - hosts:
+      - "test.aoldacloud.com"
+      secretName: "wildcard-overcloud-prod-cert"
     rules:
-    - host: gstone.aoldacloud.com
+    - host: "test.aoldacloud.com"
       http:
         paths:
-        - path: /
+        - pathType: "Prefix"
+          path: "/"
           backend:
             service:
+              name: "test-external"
               port:
-                number: 8080
-              name: gstone-external
-          pathType: Prefix
+                number: 443
